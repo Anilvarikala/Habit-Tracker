@@ -16,7 +16,12 @@ app.use(session({
   secret : "Joymax@123",
   store : mongoStore.create({mongoUrl : process.env.mongoUrl})
 }))
-
+app.get("/", (req, res) => {
+  res.json({
+    success : true,
+    message : "Server deployed successfully!"
+  })
+})
 app.use(cors())
 app.use(express.urlencoded({extended : true}))
 app.use("/api/auth", userRouter)
