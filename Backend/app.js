@@ -22,7 +22,8 @@ app.get("/", (req, res) => {
     message : "Server deployed successfully!"
   })
 })
-app.use(cors())
+app.use(cors({ origin: "*" })); // or origin: "https://your-netlify-site.netlify.app"
+
 app.use(express.urlencoded({extended : true}))
 app.use("/api/auth", userRouter)
 app.use("/api/habit", habitRouter)
