@@ -47,6 +47,7 @@ const Home = () => {
       );
 
       // update streak in state
+      //maintaing the streak
       setHabits((prev) =>
         prev.map((h) =>
           h.habitId === habitId ? { ...h, streak: h.streak + 1 } : h
