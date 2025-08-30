@@ -18,7 +18,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("User Signup Data:", formData);
-    const result = await axios.post(`${process.env.Backend_Url}/api/auth/signup`, formData)
+    const result = await axios.post(`${process.env.VITE_BACKEND_URL}/api/auth/signup`, formData)
 
      if(result.data.success === false){
        alert(result.data.message)

@@ -9,7 +9,7 @@ const Profile = () => {
   const [email, setEmail] = useState('') 
   const fetchProfile = async () => {
     const userId = localStorage.getItem('appId')
-    const profile = await axios.post(`${process.env.Backend_Url}/api/auth/profile`, {
+    const profile = await axios.post(`${process.env.VITE_BACKEND_URL}/api/auth/profile`, {
       userId : userId
     })
     setEmail(profile.data.email)

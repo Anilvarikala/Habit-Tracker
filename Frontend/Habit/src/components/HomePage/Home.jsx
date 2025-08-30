@@ -8,7 +8,7 @@ const Home = () => {
   const [newHabit, setNewHabit] = useState("");
 
   async function Logout() {
-    const res = await axios.get(`${process.env.Backend_Url}/api/auth/logout`);
+    const res = await axios.get(`${process.env.VITE_BACKEND_URL}/api/auth/logout`);
     console.log(res);
     localStorage.removeItem("AnilToken");
     window.location.href = "/login";
