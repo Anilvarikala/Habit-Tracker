@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";  // ✅ import Link, useNavigate
 
 const Home = () => {
   const [habits, setHabits] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newHabit, setNewHabit] = useState("");
+  const navigate = useNavigate();  // ✅ for redirect after logout
 
   async function Logout() {
-    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`);
-    console.log(res);
-    localStorage.removeItem("AnilToken");
-    window.location.href = "/login";
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`
+      );
+      console.log(res);
+      localStorage.removeItem("AnilToken");
+      navigate("/login");  // ✅ SPA redirect instead of window.location.href
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   }
 
   async function fetchHabits() {
@@ -46,8 +54,6 @@ const Home = () => {
         }
       );
 
-      // update streak in state
-      //maintaing the streak
       setHabits((prev) =>
         prev.map((h) =>
           h.habitId === habitId ? { ...h, streak: h.streak + 1 } : h
@@ -67,14 +73,12 @@ const Home = () => {
         {
           headers: {
             token: localStorage.getItem("AnilToken"),
-            userId : localStorage.getItem('appId')
+            userId: localStorage.getItem("appId"),
           },
         }
       );
 
       console.log("Habit Added:", result.data);
-
-      // add to UI instantly
       setHabits([...habits, result.data.habit]);
       setNewHabit("");
       setShowForm(false);
@@ -83,18 +87,23 @@ const Home = () => {
     }
   }
 
-   async function removeHabit(habitId){
+  async function removeHabit(habitId) {
+    try {
+      const result = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/habit/remove`,
+        {
+          userId: localStorage.getItem("appId"),
+          habitId: habitId,
+        }
+      );
 
-    const result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/habit/remove`, {
-      userId : localStorage.getItem("appId"),
-      habitId : habitId
-     })
-     
-     const newHabits = habits.filter((habit) => habit.habitId !== habitId)
-     setHabits(newHabits)
-     console.log(result)
-     
-   }
+      const newHabits = habits.filter((habit) => habit.habitId !== habitId);
+      setHabits(newHabits);
+      console.log(result);
+    } catch (err) {
+      console.error("Error removing habit:", err);
+    }
+  }
 
   useEffect(() => {
     fetchHabits();
@@ -107,13 +116,15 @@ const Home = () => {
         <div className="navbar-logo">MyApp</div>
         <ul className="navbar-links">
           <li>
-            <a href="/dashboard">Dashboard</a>
+            <Link to="/dashboard">Dashboard</Link> {/* ✅ Link instead of <a> */}
           </li>
           <li>
-            <a href="/profile">Profile</a>
+            <Link to="/profile">Profile</Link> {/* ✅ */}
           </li>
-          <li onClick={() => Logout()}>
-            <a href="/logout">Logout</a>
+          <li>
+            <button onClick={Logout} className="logout-btn">
+              Logout
+            </button> {/* ✅ button instead of <a> */}
           </li>
         </ul>
       </nav>
@@ -122,12 +133,10 @@ const Home = () => {
       <div className="home-content">
         <h1>Your Habits</h1>
 
-        {/* Add Habit Button */}
         <button className="add-habit-btn" onClick={() => setShowForm(true)}>
           + Add Habit
         </button>
 
-        {/* Habit Form Popup */}
         {showForm && (
           <div className="habit-form">
             <form onSubmit={addHabit}>
@@ -146,7 +155,6 @@ const Home = () => {
           </div>
         )}
 
-        {/* Habit List */}
         <div className="habit-list">
           {habits.length > 0 ? (
             habits.map((habit) => (
@@ -158,9 +166,13 @@ const Home = () => {
                 <button onClick={() => addStreak(habit.habitId)}>
                   + Add Streak
                 </button>
-                <br /><br />
-                  <button className="red" onClick={() => removeHabit(habit.habitId)}>
-                   Remove Habit
+                <br />
+                <br />
+                <button
+                  className="red"
+                  onClick={() => removeHabit(habit.habitId)}
+                >
+                  Remove Habit
                 </button>
               </div>
             ))
