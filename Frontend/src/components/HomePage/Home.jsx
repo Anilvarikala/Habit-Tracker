@@ -18,7 +18,7 @@ const Home = () => {
     try {
       const userId = localStorage.getItem("appId");
       const result = await axios.post(
-        "http://localhost:3000/api/habit/allhabits",
+        `${process.env.VITE_BACKEND_URL}/api/habit/allhabits`,
         { userId },
         {
           headers: {
@@ -36,7 +36,7 @@ const Home = () => {
   async function addStreak(habitId) {
     try {
       await axios.post(
-        "http://localhost:3000/api/habit/streakplus",
+        `${process.env.VITE_BACKEND_URL}/api/habit/streakplus`,
         { habitId, userId: localStorage.getItem("appId") },
         {
           headers: {
@@ -61,7 +61,7 @@ const Home = () => {
     e.preventDefault();
     try {
       const result = await axios.post(
-        "http://localhost:3000/api/habit/add",
+        `${process.env.VITE_BACKEND_URL}/api/habit/add`,
         { habitName: newHabit, userId: localStorage.getItem("appId") },
         {
           headers: {
@@ -84,7 +84,7 @@ const Home = () => {
 
    async function removeHabit(habitId){
 
-    const result = await axios.post("http://localhost:3000/api/habit/remove", {
+    const result = await axios.post(`${process.env.VITE_BACKEND_URL}/api/habit/remove`, {
       userId : localStorage.getItem("appId"),
       habitId : habitId
      })
